@@ -136,7 +136,7 @@ export default function App() {
               <AgendaView
                 citas={citas}
                 isEditor={isEditor}
-                onNew={() => setEditModal({ type: 'cita', data: {} })}
+                onNew={(prefill) => setEditModal({ type: 'cita', data: prefill || {} })}
                 onEdit={(cita) => setEditModal({ type: 'cita', data: cita })}
               />
             )}

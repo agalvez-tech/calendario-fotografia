@@ -39,7 +39,7 @@ export default function EditModal({ type, data, onSaveCita, onDeleteCita, onSave
     hora: '',
     referencia: '',
     vivienda: '',
-    servicio: 'Fotografía',
+    servicio: 'FOTOGRAFÍA',
     agente: '',
     notas: '',
     // pendiente-only
