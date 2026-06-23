@@ -1,0 +1,9 @@
+{
+  "name": "RK Fotografía",
+  "short_name": "RK Foto",
+  "theme_color": "#CF731B",
+  "background_color": "#111111",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": []
+}
