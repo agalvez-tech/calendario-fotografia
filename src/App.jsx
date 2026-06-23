@@ -19,6 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [editModal, setEditModal] = useState(null) // null | { type: 'cita'|'pendiente', data: {} }
   const [toast, setToast] = useState(null)
+  const [fetchError, setFetchError] = useState(null)
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
@@ -28,10 +29,17 @@ export default function App() {
   const fetchData = useCallback(async () => {
     try {
       const r = await fetch(API)
+      if (!r.ok) {
+        const text = await r.text()
+        throw new Error(`HTTP ${r.status}: ${text.slice(0, 200)}`)
+      }
       const d = await r.json()
       setCitas(d.citas || [])
       setPendientes(d.pendientes || [])
-    } catch {
+      setFetchError(null)
+    } catch (e) {
+      console.error('fetchData error:', e)
+      setFetchError(e.message)
       showToast('Error cargando datos', 'error')
     } finally {
       setLoading(false)
@@ -129,6 +137,22 @@ export default function App() {
           <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)' }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>📷</div>
             <div style={{ fontWeight: 600 }}>Cargando agenda...</div>
+          </div>
+        ) : fetchError ? (
+          <div style={{
+            background: 'rgba(231,76,60,0.1)', border: '1px solid var(--red)',
+            borderRadius: 12, padding: '24px', margin: '20px 0'
+          }}>
+            <div style={{ fontWeight: 700, color: 'var(--red)', marginBottom: 8 }}>⚠️ Error al cargar los datos</div>
+            <div style={{ fontSize: 12, color: 'var(--text-dim)', fontFamily: 'monospace',
+              background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: 6, wordBreak: 'break-all' }}>
+              {fetchError}
+            </div>
+            <button onClick={fetchData} style={{
+              marginTop: 14, background: 'var(--orange)', color: '#fff',
+              border: 'none', borderRadius: 8, padding: '8px 16px',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer'
+            }}>Reintentar</button>
           </div>
         ) : (
           <>
