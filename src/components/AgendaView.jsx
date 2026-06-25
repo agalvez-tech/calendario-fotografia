@@ -2,30 +2,35 @@ import { useState } from 'react'
 import CitaCard from './CitaCard.jsx'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
-const DAY_NAMES_FULL = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
-function getMondayOf(date) {
-  const d = new Date(date)
-  const day = d.getDay() // 0=Sun
-  const diff = day === 0 ? -6 : 1 - day
-  d.setDate(d.getDate() + diff)
-  d.setHours(0,0,0,0)
-  return d
+// ─── Date helpers (all LOCAL, no UTC shifts) ─────────────────────────────────
+
+// Returns "YYYY-MM-DD" from a local Date object
+function localDateStr(d) {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
-function dateStr(d) {
-  return d.toISOString().split('T')[0]
+// Today as "YYYY-MM-DD" local
+function todayStr() {
+  return localDateStr(new Date())
 }
 
+// Add N days to a Date, returns new Date (local)
 function addDays(d, n) {
-  const r = new Date(d)
-  r.setDate(r.getDate() + n)
+  const r = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)
   return r
 }
 
-function todayStr() {
-  return new Date().toISOString().split('T')[0]
+// Monday of the week containing `date` (local)
+function getMondayOf(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const dow = d.getDay() // 0=Sun, 1=Mon...
+  const diff = dow === 0 ? -6 : 1 - dow
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff)
 }
 
 function formatWeekLabel(monday) {
@@ -38,18 +43,21 @@ function formatWeekLabel(monday) {
   return `${monday.getDate()} ${m1} – ${sunday.getDate()} ${m2} ${sunday.getFullYear()}`
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
   const [weekStart, setWeekStart] = useState(() => getMondayOf(new Date()))
 
   const today = todayStr()
+  // 7 days: Mon–Sun
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
   const weekLabel = formatWeekLabel(weekStart)
 
   const prevWeek = () => setWeekStart(d => addDays(d, -7))
   const nextWeek = () => setWeekStart(d => addDays(d, 7))
-  const goToday = () => setWeekStart(getMondayOf(new Date()))
+  const goToday  = () => setWeekStart(getMondayOf(new Date()))
 
-  // Group citas by date
+  // Group citas by date string
   const byDate = {}
   citas.forEach(c => {
     if (!byDate[c.fecha]) byDate[c.fecha] = []
@@ -59,9 +67,8 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
     byDate[d].sort((a, b) => (a.hora || '').localeCompare(b.hora || ''))
   })
 
-  const weekCitas = weekDays.reduce((acc, d) => acc + (byDate[dateStr(d)] || []).length, 0)
-
-  const isCurrentWeek = dateStr(getMondayOf(new Date())) === dateStr(weekStart)
+  const weekCitas = weekDays.reduce((acc, d) => acc + (byDate[localDateStr(d)] || []).length, 0)
+  const isCurrentWeek = localDateStr(getMondayOf(new Date())) === localDateStr(weekStart)
 
   return (
     <div>
@@ -74,7 +81,7 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
           </p>
         </div>
         {isEditor && (
-          <button onClick={onNew} style={{
+          <button onClick={() => onNew({})} style={{
             background:'var(--orange)', color:'#fff', border:'none',
             borderRadius:8, padding:'10px 18px', fontSize:13, fontWeight:700, cursor:'pointer'
           }}>+ Nueva cita</button>
@@ -83,14 +90,15 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
 
       {/* Week navigation */}
       <div style={{
-        background:'#FFFFFF', border:'1px solid var(--card-border)',
+        background:'#fff', border:'1px solid var(--card-border)',
         borderRadius:12, padding:'12px 16px', marginBottom:20,
-        display:'flex', alignItems:'center', justifyContent:'space-between', gap:12
+        display:'flex', alignItems:'center', justifyContent:'space-between', gap:12,
+        boxShadow: 'var(--card-shadow)'
       }}>
         <button onClick={prevWeek} style={{
-          background:'none', border:'1px solid var(--card-border)',
-          borderRadius:8, color:'var(--text)', padding:'7px 14px',
-          fontSize:16, cursor:'pointer', fontWeight:600
+          background:'#F4F5F7', border:'1px solid var(--card-border)',
+          borderRadius:8, color:'var(--text)', padding:'7px 16px',
+          fontSize:16, cursor:'pointer', fontWeight:700
         }}>‹</button>
 
         <div style={{ textAlign:'center' }}>
@@ -104,20 +112,18 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
         </div>
 
         <button onClick={nextWeek} style={{
-          background:'none', border:'1px solid var(--card-border)',
-          borderRadius:8, color:'var(--text)', padding:'7px 14px',
-          fontSize:16, cursor:'pointer', fontWeight:600
+          background:'#F4F5F7', border:'1px solid var(--card-border)',
+          borderRadius:8, color:'var(--text)', padding:'7px 16px',
+          fontSize:16, cursor:'pointer', fontWeight:700
         }}>›</button>
       </div>
 
       {/* Week grid */}
       <div style={{
-        display:'grid',
-        gridTemplateColumns: 'repeat(7, 1fr)',
-        gap: 10
+        display:'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10
       }}>
         {weekDays.map((day, i) => {
-          const ds = dateStr(day)
+          const ds = localDateStr(day)
           const dayCitas = byDate[ds] || []
           const isToday = ds === today
           const isPast = ds < today
@@ -125,12 +131,13 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
 
           return (
             <div key={ds} style={{
-              background: isToday ? 'rgba(207,115,27,0.06)' : '#FFFFFF',
+              background: isToday ? 'rgba(207,115,27,0.05)' : '#FFFFFF',
               border: `1px solid ${isToday ? 'rgba(207,115,27,0.4)' : 'var(--card-border)'}`,
               borderRadius: 10,
               minHeight: 120,
-              opacity: isPast && !isToday ? 0.7 : 1,
-              display: 'flex', flexDirection: 'column'
+              opacity: isPast && !isToday ? 0.65 : 1,
+              display: 'flex', flexDirection: 'column',
+              boxShadow: 'var(--card-shadow)'
             }}>
               {/* Day header */}
               <div style={{
@@ -140,7 +147,7 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
               }}>
                 <span style={{
                   fontSize: 10, fontWeight: 700, letterSpacing: 0.5,
-                  color: isToday ? 'var(--orange)' : isWeekend ? 'var(--text-muted)' : 'var(--text-dim)',
+                  color: isToday ? 'var(--orange)' : isWeekend ? '#AAB0C0' : 'var(--text-muted)',
                   textTransform: 'uppercase'
                 }}>{DAY_NAMES[i]}</span>
                 <span style={{
@@ -176,12 +183,9 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
                 )}
                 {isEditor && (
                   <button
-                    onClick={() => {
-                      const fechaDefault = ds
-                      onNew({ fecha: fechaDefault })
-                    }}
+                    onClick={() => onNew({ fecha: ds })}
                     style={{
-                      background:'none', border:'1px dashed var(--card-border)',
+                      background:'none', border:'1px dashed #D0D3DC',
                       borderRadius:6, color:'var(--text-muted)', fontSize:11,
                       padding:'4px', cursor:'pointer', marginTop:'auto',
                       fontWeight:600
@@ -196,16 +200,16 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
 
       {/* Week summary */}
       {weekCitas > 0 && (
-        <WeekSummary citas={weekDays.flatMap(d => byDate[dateStr(d)] || [])} />
+        <WeekSummary citas={weekDays.flatMap(d => byDate[localDateStr(d)] || [])} />
       )}
     </div>
   )
 }
 
 const SERVICIO_COLORS = {
-  'HS': '#9B59B6',
-  'RS': '#E74C3C',
-  'FOTOGRAFÍA': '#3498DB',
+  'HS': '#8E44AD',
+  'RS': '#C0392B',
+  'FOTOGRAFÍA': '#2980B9',
 }
 
 function MiniCitaCard({ cita, isEditor, onEdit }) {
@@ -215,14 +219,13 @@ function MiniCitaCard({ cita, isEditor, onEdit }) {
       onClick={isEditor ? onEdit : undefined}
       style={{
         background: `${color}12`,
-        border: `1px solid ${color}40`,
+        border: `1px solid ${color}35`,
         borderLeft: `3px solid ${color}`,
-        borderRadius: 6,
-        padding: '5px 7px',
+        borderRadius: 6, padding: '5px 7px',
         cursor: isEditor ? 'pointer' : 'default',
         transition: 'opacity 0.1s'
       }}
-      onMouseEnter={e => isEditor && (e.currentTarget.style.opacity = '0.8')}
+      onMouseEnter={e => isEditor && (e.currentTarget.style.opacity = '0.75')}
       onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
     >
       {cita.hora && (
@@ -231,10 +234,7 @@ function MiniCitaCard({ cita, isEditor, onEdit }) {
       <div style={{ fontSize: 11, fontWeight: 700, color:'var(--text)', lineHeight:1.2 }}>
         {cita.referencia || '—'}
       </div>
-      <div style={{
-        fontSize: 10, fontWeight: 700,
-        color, marginTop: 2
-      }}>{cita.servicio}</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color, marginTop: 2 }}>{cita.servicio}</div>
       {cita.agente && (
         <div style={{ fontSize: 10, color:'var(--text-muted)', marginTop:1 }}>
           {cita.agente.split(' ')[0]}
@@ -246,24 +246,20 @@ function MiniCitaCard({ cita, isEditor, onEdit }) {
 
 function WeekSummary({ citas }) {
   const byService = {}
-  citas.forEach(c => {
-    byService[c.servicio] = (byService[c.servicio] || 0) + 1
-  })
+  citas.forEach(c => { byService[c.servicio] = (byService[c.servicio] || 0) + 1 })
   return (
     <div style={{
       marginTop: 16, background:'#FFFFFF', border:'1px solid var(--card-border)',
       borderRadius:10, padding:'12px 16px',
-      display:'flex', gap:20, alignItems:'center', flexWrap:'wrap'
+      display:'flex', gap:20, alignItems:'center', flexWrap:'wrap',
+      boxShadow: 'var(--card-shadow)'
     }}>
       <span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:0.5 }}>
         Resumen semana
       </span>
       {Object.entries(byService).map(([srv, count]) => (
         <div key={srv} style={{ display:'flex', alignItems:'center', gap:6 }}>
-          <div style={{
-            width:8, height:8, borderRadius:'50%',
-            background: SERVICIO_COLORS[srv] || 'var(--orange)'
-          }}/>
+          <div style={{ width:8, height:8, borderRadius:'50%', background: SERVICIO_COLORS[srv] || 'var(--orange)' }}/>
           <span style={{ fontSize:12, fontWeight:700, color:'var(--text)' }}>{count}</span>
           <span style={{ fontSize:12, color:'var(--text-muted)' }}>{srv}</span>
         </div>

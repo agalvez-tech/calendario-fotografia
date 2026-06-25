@@ -44,7 +44,7 @@ export default function EditModal({ type, data, onSaveCita, onDeleteCita, onSave
     notas: '',
     // pendiente-only
     motivo: '',
-    fechaPendiente: new Date().toISOString().split('T')[0],
+    fechaPendiente: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` })(),
     ...data
   })
   const [confirmDelete, setConfirmDelete] = useState(false)
