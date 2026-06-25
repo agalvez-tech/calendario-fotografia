@@ -7,7 +7,7 @@ export default function Toast({ msg, type = 'success' }) {
   return (
     <div style={{
       position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--dark)', border: `1px solid ${colors[type]}`,
+      background: '#FFFFFF', border: `1px solid ${colors[type]}`,
       borderRadius: 10, padding: '12px 20px',
       fontSize: 13, fontWeight: 600, color: 'var(--text)',
       zIndex: 400, boxShadow: '0 4px 20px rgba(0,0,0,0.4)',

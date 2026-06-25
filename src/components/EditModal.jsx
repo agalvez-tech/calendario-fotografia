@@ -77,7 +77,7 @@ export default function EditModal({ type, data, onSaveCita, onDeleteCita, onSave
 
   const inputStyle = {
     width: '100%', padding: '10px 12px',
-    background: '#2A2A2A', border: '1px solid var(--card-border)',
+    background: '#F8F9FB', border: '1px solid var(--card-border)',
     borderRadius: 8, color: 'var(--text)', fontSize: 13, fontWeight: 500
   }
   const labelStyle = {
@@ -89,14 +89,14 @@ export default function EditModal({ type, data, onSaveCita, onDeleteCita, onSave
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
+        position: 'fixed', inset: 0, background: 'rgba(26,26,46,0.6)',
         zIndex: 200, display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
         padding: '0'
       }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div style={{
-        background: 'var(--dark)',
+        background: '#FFFFFF',
         border: '1px solid var(--card-border)',
         borderRadius: '16px 16px 0 0',
         width: '100%', maxWidth: 520,

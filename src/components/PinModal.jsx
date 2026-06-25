@@ -40,14 +40,14 @@ export default function PinModal({ pin, onSuccess, onClose }) {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+        position: 'fixed', inset: 0, background: 'rgba(26,26,46,0.65)',
         zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 24
       }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div style={{
-        background: 'var(--dark)', border: '1px solid var(--card-border)',
+        background: '#FFFFFF', border: '1px solid var(--card-border)',
         borderRadius: 16, padding: '32px 28px', width: '100%', maxWidth: 300,
         textAlign: 'center',
         animation: shake ? 'shake 0.4s' : 'none'
@@ -82,7 +82,7 @@ export default function PinModal({ pin, onSuccess, onClose }) {
               style={{
                 width: 48, height: 54,
                 textAlign: 'center', fontSize: 20, fontWeight: 700,
-                background: d ? 'rgba(207,115,27,0.1)' : 'var(--card)',
+                background: d ? 'rgba(207,115,27,0.08)' : '#F8F9FB',
                 border: `2px solid ${error ? 'var(--red)' : d ? 'var(--orange)' : 'var(--card-border)'}`,
                 borderRadius: 10, color: 'var(--text)',
                 transition: 'all 0.15s'

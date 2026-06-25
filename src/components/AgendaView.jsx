@@ -83,7 +83,7 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
 
       {/* Week navigation */}
       <div style={{
-        background:'var(--card)', border:'1px solid var(--card-border)',
+        background:'#FFFFFF', border:'1px solid var(--card-border)',
         borderRadius:12, padding:'12px 16px', marginBottom:20,
         display:'flex', alignItems:'center', justifyContent:'space-between', gap:12
       }}>
@@ -125,7 +125,7 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
 
           return (
             <div key={ds} style={{
-              background: isToday ? 'rgba(207,115,27,0.06)' : 'var(--card)',
+              background: isToday ? 'rgba(207,115,27,0.06)' : '#FFFFFF',
               border: `1px solid ${isToday ? 'rgba(207,115,27,0.4)' : 'var(--card-border)'}`,
               borderRadius: 10,
               minHeight: 120,
@@ -162,7 +162,7 @@ export default function AgendaView({ citas, isEditor, onNew, onEdit }) {
                 {dayCitas.length === 0 ? (
                   <div style={{
                     flex:1, display:'flex', alignItems:'center', justifyContent:'center',
-                    color:'var(--card-border)', fontSize:18
+                    color:'#D0D3DC', fontSize:18
                   }}>—</div>
                 ) : (
                   dayCitas.map(cita => (
@@ -214,7 +214,7 @@ function MiniCitaCard({ cita, isEditor, onEdit }) {
     <div
       onClick={isEditor ? onEdit : undefined}
       style={{
-        background: `${color}15`,
+        background: `${color}12`,
         border: `1px solid ${color}40`,
         borderLeft: `3px solid ${color}`,
         borderRadius: 6,
@@ -251,7 +251,7 @@ function WeekSummary({ citas }) {
   })
   return (
     <div style={{
-      marginTop: 16, background:'var(--card)', border:'1px solid var(--card-border)',
+      marginTop: 16, background:'#FFFFFF', border:'1px solid var(--card-border)',
       borderRadius:10, padding:'12px 16px',
       display:'flex', gap:20, alignItems:'center', flexWrap:'wrap'
     }}>

@@ -36,7 +36,7 @@ export default function SearchView({ citas, pendientes, isEditor, onEditCita, on
           autoFocus
           style={{
             width: '100%', padding: '12px 16px 12px 42px',
-            background: 'var(--card)', border: '1px solid var(--card-border)',
+            background: '#FFFFFF', border: '1px solid var(--card-border)',
             borderRadius: 10, color: 'var(--text)', fontSize: 15, fontWeight: 500
           }}
         />
@@ -108,7 +108,7 @@ function PendienteCard({ pendiente: p, isEditor, onEdit }) {
     <div
       onClick={isEditor ? onEdit : undefined}
       style={{
-        background: 'var(--card)', border: '1px solid var(--card-border)',
+        background: '#FFFFFF', border: '1px solid var(--card-border)',
         borderLeft: '3px solid var(--yellow)', borderRadius: 10, padding: '14px 16px',
         cursor: isEditor ? 'pointer' : 'default'
       }}

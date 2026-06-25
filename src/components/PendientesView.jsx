@@ -55,7 +55,7 @@ function PendienteCard({ pendiente: p, isEditor, onEdit }) {
     <div
       onClick={isEditor ? onEdit : undefined}
       style={{
-        background: 'var(--card)',
+        background: '#FFFFFF',
         border: '1px solid var(--card-border)',
         borderLeft: '3px solid var(--yellow)',
         borderRadius: 10, padding: '16px',

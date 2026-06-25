@@ -1,10 +1,13 @@
 const SERVICIOS_COLORS = {
-  'Fotografía': '#3498DB',
-  'Vídeo': '#9B59B6',
+  'FOTOGRAFÍA': '#2980B9',
+  'HS': '#8E44AD',
+  'RS': '#C0392B',
+  'Fotografía': '#2980B9',
+  'Vídeo': '#8E44AD',
   'Fotografía + Vídeo': '#E67E22',
-  'Fotografía aérea': '#1ABC9C',
-  'Tour virtual': '#E74C3C',
-  'Planos': '#F39C12',
+  'Fotografía aérea': '#16A085',
+  'Tour virtual': '#C0392B',
+  'Planos': '#D35400',
 }
 
 export default function CitaCard({ cita, isPast, isEditor, onEdit }) {
@@ -14,87 +17,72 @@ export default function CitaCard({ cita, isPast, isEditor, onEdit }) {
     <div
       onClick={isEditor ? onEdit : undefined}
       style={{
-        background: 'var(--card)',
+        background: '#fff',
         border: `1px solid var(--card-border)`,
         borderLeft: `3px solid ${color}`,
         borderRadius: 10,
         padding: '14px 16px',
         cursor: isEditor ? 'pointer' : 'default',
-        opacity: isPast ? 0.65 : 1,
+        opacity: isPast ? 0.6 : 1,
         transition: 'transform 0.15s, box-shadow 0.15s',
-        position: 'relative',
-        overflow: 'hidden'
+        boxShadow: 'var(--card-shadow)'
       }}
       onMouseEnter={e => {
         if (isEditor) {
           e.currentTarget.style.transform = 'translateY(-1px)'
-          e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)'
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'
         }
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform = 'none'
-        e.currentTarget.style.boxShadow = 'none'
+        e.currentTarget.style.boxShadow = 'var(--card-shadow)'
       }}
     >
       {isEditor && (
-        <div style={{
-          position: 'absolute', top: 10, right: 12,
-          fontSize: 10, color: 'var(--text-muted)', fontWeight: 600
-        }}>EDITAR ✏️</div>
+        <div style={{ float: 'right', fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>
+          EDITAR ✏️
+        </div>
       )}
 
-      {/* Hora */}
       {cita.hora && (
-        <div style={{
-          fontSize: 18, fontWeight: 800, color: 'var(--text)',
-          marginBottom: 6, fontVariantNumeric: 'tabular-nums'
-        }}>{cita.hora}</div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', marginBottom: 6 }}>
+          {cita.hora}
+        </div>
       )}
 
-      {/* Referencia */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4
-      }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
         <span style={{
-          background: 'rgba(255,255,255,0.06)', border: '1px solid var(--card-border)',
-          borderRadius: 4, padding: '1px 6px', fontSize: 11, fontWeight: 700,
+          background: '#F0F2F5', border: '1px solid var(--card-border)',
+          borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 700,
           color: 'var(--text)', letterSpacing: 0.5, fontFamily: 'monospace'
         }}>{cita.referencia || '—'}</span>
         {cita.servicio && (
           <span style={{
-            background: `${color}20`, border: `1px solid ${color}40`,
-            borderRadius: 4, padding: '1px 7px', fontSize: 10, fontWeight: 700,
+            background: `${color}15`, border: `1px solid ${color}40`,
+            borderRadius: 4, padding: '2px 8px', fontSize: 11, fontWeight: 700,
             color: color
           }}>{cita.servicio}</span>
         )}
       </div>
 
-      {/* Vivienda */}
       {cita.vivienda && (
-        <div style={{
-          fontSize: 13, fontWeight: 600, color: 'var(--text)',
-          marginBottom: 4, marginTop: 6
-        }}>📍 {cita.vivienda}</div>
-      )}
-
-      {/* Agente */}
-      {cita.agente && (
-        <div style={{
-          fontSize: 12, color: 'var(--text-muted)', fontWeight: 500,
-          display: 'flex', alignItems: 'center', gap: 4
-        }}>
-          <span>👤</span>
-          <span>{cita.agente}</span>
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
+          📍 {cita.vivienda}
         </div>
       )}
 
-      {/* Notas */}
+      {cita.agente && (
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>
+          👤 {cita.agente}
+        </div>
+      )}
+
       {cita.notas && (
         <div style={{
           marginTop: 8, padding: '6px 10px',
-          background: 'rgba(255,255,255,0.03)',
-          borderRadius: 6, fontSize: 11,
-          color: 'var(--text-muted)', fontStyle: 'italic'
+          background: '#F8F9FB', borderRadius: 6,
+          fontSize: 11, color: 'var(--text-muted)', fontStyle: 'italic',
+          borderLeft: '2px solid var(--card-border)'
         }}>{cita.notas}</div>
       )}
     </div>
